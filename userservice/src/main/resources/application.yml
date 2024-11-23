@@ -1,0 +1,58 @@
+server:
+  port: 0
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.tool.hbm2ddl: DEBUG
+
+
+spring:
+  application:
+    name: user-service
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ordermanagementsystem_db
+    username: ordermanagement_user
+    password: ordermanagement_admin
+    driverClassName: org.postgresql.Driver
+  kafka:
+    bootstrap-servers:
+      - broker1:9092
+      - broker2:9093
+      - broker3:9094
+    consumer:
+      group-id: user-service-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    properties:
+      enable.idempotence: true
+  sql:
+    init:
+      mode:
+      data-locations: classpath:data.sql
+
+hazelcast:
+  client:
+    cluster-name: dev
+    network:
+      addresses:
+        - hazelcast:5701
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
+

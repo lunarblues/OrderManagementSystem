@@ -1,0 +1,230 @@
+openapi: 3.0.1
+info:
+  title: Gateway API
+  description: API Gateway for routing to UserService
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8011/api
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    OrderDTO:
+      type: object
+      properties:
+        product:
+          type: string
+          description: Name of the product
+          minLength: 5
+          example: "Laptop"
+        quantity:
+          type: integer
+          description: Quantity of the product
+          minimum: 1
+          example: 2
+      required:
+        - product
+        - quantity
+    AuthRequestDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Jessie"
+        password:
+          type: string
+          example: "securePassword123"
+    UserDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Jessie"
+        password:
+          type: string
+          example: "securePassword123"
+        email:
+          type: string
+          example: "example@domain.com"
+    PasswordChangeDTO:
+      type: object
+      properties:
+        password:
+          type: string
+          example: "newPassword456"
+paths:
+  /orders:
+    post:
+      summary: Add a new order
+      operationId: addOrder
+      description: Add a new order to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDTO'
+      responses:
+        '200':
+          description: Order added successfully
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Order added successfully"
+        '400':
+          description: Validation error - Invalid order data
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+    get:
+      summary: Get all orders
+      operationId: getOrders
+      description: Retrieve a list of all orders.
+      responses:
+        '200':
+          description: List of orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDTO'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+        '403':
+          description: Forbidden - Insufficient permissions
+  /users/delete/{id}:
+    delete:
+      summary: Delete a user by ID
+      operationId: deleteUser
+      description: Deletes a user based on their unique ID. Only accessible by authorized users.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Unique identifier of the user to be deleted
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "User with id 1 was successfully removed"
+        '403':
+          description: Forbidden - You do not have the necessary permissions
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+
+  /users/{id}:
+    get:
+      summary: Get user details by ID
+      operationId: getUser
+      description: Retrieves detailed information about a user based on their unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Unique identifier of the user to retrieve
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '404':
+          description: User not found
+        '403':
+          description: Forbidden - You do not have the necessary permissions
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+  /login:
+    post:
+      summary: Login a user
+      operationId: loginUser
+      security: [] # No security for this endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequestDTO'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "JWT token here"
+  /users:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      security: [] # No security for this endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        '201':
+          description: User successfully registered
+    get:
+      summary: Get all users
+      operationId: getUsers
+      description: Retrieve a list of all users. Only accessible by users with the "ROLE_ADMIN" role.
+      responses:
+        '200':
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+        '403':
+          description: Forbidden - You do not have the necessary permissions
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+
+  /users/verify/{otp}:
+    post:
+      summary: Verify a user
+      operationId: verifyUser
+      parameters:
+        - name: otp
+          in: path
+          required: true
+          schema:
+            type: string
+          description: OTP for user verification
+      responses:
+        '200':
+          description: User successfully verified
+  /users/password:
+    put:
+      summary: Change user password
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeDTO'
+      responses:
+        '200':
+          description: Password successfully changed
+security:
+  - BearerAuth: [] # Apply JWT authentication g

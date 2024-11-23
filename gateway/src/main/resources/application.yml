@@ -1,0 +1,46 @@
+server:
+  port: 8011
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/, classpath:/public/, classpath:/resources/, classpath:/META-INF/resources/
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+            - Path=/api/login
+          filters:
+            - RewritePath=/api/users/verify/(?<segment>.*), /verify/${segment}
+            - RewritePath=/api/users/delete/(?<segment>.*), /users/delete/${segment}
+            - RewritePath=/api/users/(?<segment>.*), /users/${segment}
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+          - RewritePath=/api/orders/(?<segment>.*), /orders/${segment}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    url: /openapi.yml
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
+

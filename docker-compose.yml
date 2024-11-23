@@ -1,0 +1,186 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - app-network
+
+  broker1:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker1
+    container_name: broker1
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - app-network
+
+  broker2:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker2
+    container_name: broker2
+    ports:
+      - "9093:9093"
+      - "29093:29093"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:9093,PLAINTEXT_HOST://localhost:29093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - app-network
+
+  broker3:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker3
+    container_name: broker3
+    ports:
+      - "9094:9094"
+      - "29094:29094"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:9094,PLAINTEXT_HOST://localhost:29094
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094,PLAINTEXT_HOST://0.0.0.0:29094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - app-network
+
+  userservice:
+    build:
+      context: .
+      dockerfile: userservice/Dockerfile-user
+    ports:
+      - "0:8080"
+    depends_on:
+      - postgres
+      - zookeeper
+      - broker1
+      - broker2
+      - broker3
+      - eureka-server
+      - hazelcast
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker1:9092,broker2:9093,broker3:9094
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ordermanagementsystem_db
+    networks:
+      - app-network
+
+  orderservice:
+    build:
+      context: .
+      dockerfile: orderservice/Dockerfile-order
+    ports:
+      - "0:8082"
+    depends_on:
+      - postgres
+      - zookeeper
+      - broker1
+      - broker2
+      - broker3
+      - eureka-server
+      - hazelcast
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker1:9092,broker2:9093,broker3:9094
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ordermanagementsystem_db
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ordermanagement_user
+      POSTGRES_PASSWORD: ordermanagement_admin
+      POSTGRES_DB: ordermanagementsystem_db
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  notificationservice:
+    build:
+      context: .
+      dockerfile: notificationservice/Dockerfile-notifications
+    ports:
+      - "0:8081"
+    depends_on:
+      - zookeeper
+      - broker1
+      - broker2
+      - broker3
+      - eureka-server
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker1:9092,broker2:9093,broker3:9094
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka
+    networks:
+      - app-network
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile-gateway
+    container_name: gateway
+    ports:
+      - "8011:8011"
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/  # Ensure it points to the Eureka container
+    networks:
+      - app-network
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka/Dockerfile-eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+
+  hazelcast:
+    image: hazelcast/hazelcast:5.3.1
+    container_name: hazelcast
+    ports:
+      - "5701:5701"
+    networks:
+      - app-network

@@ -1,0 +1,51 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: notification-service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: serversforfree7@gmail.com
+    password: oyqo trfr fsxm npeq
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  kafka:
+    consumer:
+#      bootstrap-servers:
+#        - localhost:29092
+#        - localhost:29093
+#        - localhost:29094
+
+      bootstrap-servers:
+        - broker1:9092
+        - broker2:9093
+        - broker3:9094
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    properties:
+      enable.auto.commit: false
+    listener:
+      missing-topics-fatal: false
+    template:
+      default-topic: UserCreationReq
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
+
+

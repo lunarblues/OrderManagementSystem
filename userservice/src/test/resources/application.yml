@@ -1,0 +1,4 @@
+hazelcast:
+  enabled:
+    false
+
