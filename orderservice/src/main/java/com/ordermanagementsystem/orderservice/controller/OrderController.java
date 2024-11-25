@@ -27,4 +27,26 @@ public class OrderController {
         return ResponseEntity.ok("Order added successfully");
     }
 
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable("id") long id) {
+        orderService.deleteOrder(id);
+        return ResponseEntity.ok("Order was successfully removed");
+    }
+
+    @GetMapping("/{id:[0-9]+}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") long id) {
+        return ResponseEntity.ok(orderService.getOrder(id));
+    }
+
+    @GetMapping("/orders/{get-all-orders}")
+    public ResponseEntity<List<OrderDTO>> orders() {
+        return ResponseEntity.ok(orderService.getAllOrdersForManager());
+    }
+
+    @PostMapping("/orders/complete/{id}")
+    public ResponseEntity<String> completeOrder(long id) {
+        orderService.completeOrder(id);
+        return ResponseEntity.ok("Order is completed");
+    }
+
 }

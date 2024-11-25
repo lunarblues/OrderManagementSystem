@@ -35,16 +35,22 @@ All URIs are relative to *http://localhost:8011/api*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**loginPost**](docs/DefaultApi.md#loginpost) | **POST** /login | Login a user
-*DefaultApi* | [**usersPasswordPut**](docs/DefaultApi.md#userspasswordput) | **PUT** /users/password | Change user password
-*DefaultApi* | [**usersPost**](docs/DefaultApi.md#userspost) | **POST** /users | Register a new user
-*DefaultApi* | [**usersVerifyOtpPost**](docs/DefaultApi.md#usersverifyotppost) | **POST** /users/verify/{otp} | Verify a user
+*DefaultApi* | [**addOrder**](docs/DefaultApi.md#addorder) | **POST** /orders | Add a new order
+*DefaultApi* | [**changePassword**](docs/DefaultApi.md#changepassword) | **PUT** /users/password | Change user password
+*DefaultApi* | [**deleteUser**](docs/DefaultApi.md#deleteuser) | **DELETE** /users/delete/{id} | Delete a user by ID
+*DefaultApi* | [**getOrders**](docs/DefaultApi.md#getorders) | **GET** /orders | Get all orders
+*DefaultApi* | [**getUser**](docs/DefaultApi.md#getuser) | **GET** /users/{id} | Get user details by ID
+*DefaultApi* | [**getUsers**](docs/DefaultApi.md#getusers) | **GET** /users | Get all users
+*DefaultApi* | [**loginUser**](docs/DefaultApi.md#loginuser) | **POST** /login | Login a user
+*DefaultApi* | [**registerUser**](docs/DefaultApi.md#registeruser) | **POST** /users | Register a new user
+*DefaultApi* | [**verifyUser**](docs/DefaultApi.md#verifyuser) | **POST** /users/verify/{otp} | Verify a user
 
 
 <a name="documentation-for-models"></a>
 ## Documentation for Models
 
  - [org.openapitools.client.models.AuthRequestDTO](docs/AuthRequestDTO.md)
+ - [org.openapitools.client.models.OrderDTO](docs/OrderDTO.md)
  - [org.openapitools.client.models.PasswordChangeDTO](docs/PasswordChangeDTO.md)
  - [org.openapitools.client.models.UserDTO](docs/UserDTO.md)
 
@@ -52,4 +58,8 @@ Class | Method | HTTP request | Description
 <a name="documentation-for-authorization"></a>
 ## Documentation for Authorization
 
-All endpoints do not require authorization.
+<a name="BearerAuth"></a>
+### BearerAuth
+
+- **Type**: HTTP basic authentication
+

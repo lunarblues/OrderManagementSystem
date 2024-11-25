@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**newPassword** | **kotlin.String** |  |  [optional]
+**password** | **kotlin.String** |  |  [optional]
 
 
 

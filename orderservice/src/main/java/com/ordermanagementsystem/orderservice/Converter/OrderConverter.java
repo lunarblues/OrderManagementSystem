@@ -15,6 +15,7 @@ public class OrderConverter {
 
     public static OrderDTO entityToDTO(Order order) {
         return new OrderDTO(
+                order.getId(),
                 order.getProduct(),
                 order.getQuantity(),
                 order.getUserId()

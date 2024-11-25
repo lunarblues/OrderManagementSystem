@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commons.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Commons.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons/OrderManagementSystem.commons.main.iml" filepath="$PROJECT_DIR$/.idea/modules/commons/OrderManagementSystem.commons.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway/OrderManagementSystem.gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway/OrderManagementSystem.gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/orderservice/OrderManagementSystem.orderservice.main.iml" filepath="$PROJECT_DIR$/.idea/modules/orderservice/OrderManagementSystem.orderservice.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/userservice/OrderManagementSystem.userservice.main.iml" filepath="$PROJECT_DIR$/.idea/modules/userservice/OrderManagementSystem.userservice.main.iml" />
     </modules>

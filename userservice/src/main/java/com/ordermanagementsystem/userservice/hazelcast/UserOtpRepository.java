@@ -6,6 +6,7 @@ import com.hazelcast.map.IMap;
 import com.hazelcast.query.Predicates;
 import com.ordermanagementsystem.dto.UserDTO;
 import com.ordermanagementsystem.userservice.otp.UserWithOtp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -34,10 +35,7 @@ public class UserOtpRepository {
         userMap.forEach((key, value) -> System.out.println("Key: " + key + ", Value: " + value));
         String uniqueKey = generateUniqueKey();
         UserWithOtp userWithOtp = new UserWithOtp(otp, userDTO);
-        System.out.println("123456");
-        System.out.println(userDTO.toString());
         userMap.put(uniqueKey, userWithOtp, 24, TimeUnit.HOURS);
-        System.out.println("completed");
     }
 
 

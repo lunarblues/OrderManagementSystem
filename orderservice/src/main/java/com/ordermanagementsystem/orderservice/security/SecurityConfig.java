@@ -5,7 +5,6 @@ package com.ordermanagementsystem.orderservice.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeRequests()
+                .requestMatchers("/api/orders/get-all-orders", "/api/orders/complete/**").hasRole("MANAGER")
                 .requestMatchers("/api/orders/**")
                 .authenticated()
                 .anyRequest().authenticated()

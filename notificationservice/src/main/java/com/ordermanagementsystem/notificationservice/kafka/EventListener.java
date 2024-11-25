@@ -1,8 +1,8 @@
 package com.ordermanagementsystem.notificationservice.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ordermanagementsystem.event.OrderEvent;
 import com.ordermanagementsystem.event.UserCreationReqEvent;
-import com.ordermanagementsystem.event.UserVerifiedEvent;
 import com.ordermanagementsystem.notificationservice.service.MailService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +31,23 @@ public class EventListener {
         }
     }
 
-    @KafkaListener(topics = "UserVerified", groupId = "notification-service-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeUserVerifiedEvent(ConsumerRecord<String, String> record) {
+    @KafkaListener(topics = "OrderPlaced", groupId = "notification-service-group", containerFactory = "kafkaListenerContainerFactory")
+    public void consumeOrderPlacedEvent(ConsumerRecord<String, String> record) {
         try {
-            UserVerifiedEvent event = objectMapper.readValue(record.value(), UserVerifiedEvent.class);
-            mailService.sendEmail(event.getMail(), "Verification status", "You verified successfully!");
+            OrderEvent event = objectMapper.readValue(record.value(), OrderEvent.class);
+            mailService.sendEmail(event.getMail(), "Order status", "Order was placed successfully!");
         } catch (Exception e) {
-            System.err.println("Error processing UserVerifiedEvent: " + e.getMessage());
+            System.err.println("Error processing OrderPlacedEvent: " + e.getMessage());
+        }
+    }
+
+    @KafkaListener(topics = "OrderCompleted", groupId = "notification-service-group", containerFactory = "kafkaListenerContainerFactory")
+    public void consumeOrderCompletedEvent(ConsumerRecord<String, String> record) {
+        try {
+            OrderEvent event = objectMapper.readValue(record.value(), OrderEvent.class);
+            mailService.sendEmail(event.getMail(), "Order status", "Order was placed successfully!");
+        } catch (Exception e) {
+            System.err.println("Error processing OrderPlacedEvent: " + e.getMessage());
         }
     }
 }

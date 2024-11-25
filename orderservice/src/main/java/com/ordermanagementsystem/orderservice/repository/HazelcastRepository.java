@@ -38,5 +38,24 @@ public class HazelcastRepository {
                 .filter(order -> order.getUserId() == userId)
                 .collect(Collectors.toList());
     }
+
+    public List<OrderDTO> findAll() {
+        return orderMap.values().stream().toList();
+    }
+
+    public boolean removeOrder(long orderId) {
+        String keyToRemove = orderMap.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().getOrderId() == orderId)
+                .map(entry -> entry.getKey())
+                .findFirst()
+                .orElse(null);
+
+        if (keyToRemove != null) {
+            orderMap.remove(keyToRemove);
+            return true; // Removal was successful
+        }
+        return false; // No matching order found
+    }
 }
 

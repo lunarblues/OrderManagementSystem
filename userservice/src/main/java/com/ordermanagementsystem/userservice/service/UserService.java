@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ordermanagementsystem.dto.UserDTO;
 import com.ordermanagementsystem.event.UserCreationReqEvent;
-import com.ordermanagementsystem.event.UserVerifiedEvent;
 import com.ordermanagementsystem.userservice.converters.UserDTOConverter;
 import com.ordermanagementsystem.dto.PasswordChangeDTO;
 import com.ordermanagementsystem.userservice.exceptions.UserNotFoundException;
@@ -49,21 +48,12 @@ public class UserService {
     }
 
     public void verifyUser(String otp) {
-        System.out.println("starting inspection");
+        System.out.println("nothiiiiing");
         UserDTO userDTO = userOtpRepository.getUserByOtp(otp).getUserDTO();
         User user = UserDTOConverter.fromDTO(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(roleRepository.findById(2L).get());
         userRepository.save(user);
-        UserVerifiedEvent event = new UserVerifiedEvent(user.getEmail());
-        try {
-            String message = objectMapper.writeValueAsString(event);
-            eventProducer.sendEvent("UserCreationReq", null, message);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error serializing event: " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Error sending event to Kafka: " + e.getMessage(), e);
-        }
     }
 
     public void deleteUser(long id) {

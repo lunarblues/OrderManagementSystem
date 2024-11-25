@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class UserVerifiedEvent {
+public class OrderEvent {
     private String mail;
-
 }

@@ -11,6 +11,8 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class OrderDTO {
 
+    private Long orderId;
+
     @NotNull
     @Size(min = 5)
     private String product;

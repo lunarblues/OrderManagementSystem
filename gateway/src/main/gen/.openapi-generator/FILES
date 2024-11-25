@@ -1,8 +1,8 @@
-.openapi-generator-ignore
 README.md
 build.gradle
 docs/AuthRequestDTO.md
 docs/DefaultApi.md
+docs/OrderDTO.md
 docs/PasswordChangeDTO.md
 docs/UserDTO.md
 gradle/wrapper/gradle-wrapper.jar
@@ -29,5 +29,6 @@ src/main/kotlin/org/openapitools/client/infrastructure/Serializer.kt
 src/main/kotlin/org/openapitools/client/infrastructure/URIAdapter.kt
 src/main/kotlin/org/openapitools/client/infrastructure/UUIDAdapter.kt
 src/main/kotlin/org/openapitools/client/models/AuthRequestDTO.kt
+src/main/kotlin/org/openapitools/client/models/OrderDTO.kt
 src/main/kotlin/org/openapitools/client/models/PasswordChangeDTO.kt
 src/main/kotlin/org/openapitools/client/models/UserDTO.kt

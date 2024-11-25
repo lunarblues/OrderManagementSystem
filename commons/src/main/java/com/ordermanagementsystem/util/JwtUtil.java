@@ -22,12 +22,12 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public static String extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("userId", String.class)); // Extract userId from claims
+    public static long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
     public static String extractMail(String token) {
-        return extractClaim(token, claims -> claims.get("mail", String.class)); // Extract mail from claims
+        return extractClaim(token, claims -> claims.get("mail", String.class));
     }
 
     public static <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

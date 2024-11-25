@@ -26,13 +26,13 @@ import com.squareup.moshi.Json
 /**
  * 
  *
- * @param newPassword 
+ * @param password 
  */
 
 data class PasswordChangeDTO (
 
-    @Json(name = "newPassword")
-    val newPassword: kotlin.String? = null
+    @Json(name = "password")
+    val password: kotlin.String? = null
 
 )
 
