@@ -45,7 +45,7 @@ public class EventListener {
     public void consumeOrderCompletedEvent(ConsumerRecord<String, String> record) {
         try {
             OrderEvent event = objectMapper.readValue(record.value(), OrderEvent.class);
-            mailService.sendEmail(event.getMail(), "Order status", "Order was placed successfully!");
+            mailService.sendEmail(event.getMail(), "Order status", "Order is fulfilled successfully!");
         } catch (Exception e) {
             System.err.println("Error processing OrderPlacedEvent: " + e.getMessage());
         }

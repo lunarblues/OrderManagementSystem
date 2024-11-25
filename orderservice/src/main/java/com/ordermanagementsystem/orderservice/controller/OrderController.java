@@ -28,13 +28,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable("id") long id) {
+    public ResponseEntity<String> deleteOrder(@PathVariable("id") Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Order was successfully removed");
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") long id) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") Long id) {
         return ResponseEntity.ok(orderService.getOrder(id));
     }
 
@@ -44,7 +44,7 @@ public class OrderController {
     }
 
     @PostMapping("/orders/complete/{id}")
-    public ResponseEntity<String> completeOrder(long id) {
+    public ResponseEntity<String> completeOrder(@PathVariable("id") Long id) {
         orderService.completeOrder(id);
         return ResponseEntity.ok("Order is completed");
     }

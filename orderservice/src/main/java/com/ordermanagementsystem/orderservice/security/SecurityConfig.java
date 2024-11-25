@@ -20,7 +20,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/api/orders/get-all-orders", "/api/orders/complete/**").hasRole("MANAGER")
+                .requestMatchers("/api/orders/get-all-orders/**").hasRole("MANAGER")
+                .requestMatchers("/api/orders/complete/**").hasRole("MANAGER")
                 .requestMatchers("/api/orders/**")
                 .authenticated()
                 .anyRequest().authenticated()
